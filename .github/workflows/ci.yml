@@ -1,0 +1,102 @@
+#
+# Perform a regular build on any branch except main
+
+name: build
+
+on:
+    push:
+    pull_request:
+        types: [assigned, opened, synchronize, reopened]
+
+jobs:
+    # Dynamically calculate the version of this build
+    version:
+        runs-on: ubuntu-latest
+        permissions:
+            contents: read
+        outputs:
+            version: ${{ steps.version.outputs.version }}
+        steps:
+            - name: Version the project
+              id: version
+              uses: MrMatAP/mrmat-versioning-action@1.0.7
+              with:
+                  ecosystem: javascript
+                  major: 1
+                  minor: 0
+
+    # A regular project build. Test results will explicitly be reported during a pull request build
+    build:
+        runs-on: ubuntu-latest
+        needs: version
+        permissions:
+            contents: read
+        env:
+            MRMAT_VERSION: ${{ needs.version.outputs.version }}
+        steps:
+            - name: Checkout out our code
+              uses: actions/checkout@v5.0.0
+            - name: Setup Node
+              uses: actions/setup-node@v5.0.0
+              with:
+                  node-version: 24.7.0
+                  cache: npm
+            - name: Install Dependencies
+              run: npm ci
+            - name: Apply version
+              run:
+                  npm version ${{ needs.version.outputs.version }}
+                  --no-git-tag-version
+            - name: Build
+              run: npm run bundle
+            - name: Lint
+              run: npm run ci-lint
+            - name: Upload Lint results
+              if: ${{ github.event_name == 'pull_request' }}
+              uses: actions/upload-artifact@v4
+              with:
+                  name: Lint Results
+                  path: build/lint.sarif
+            - name: Upload Sarif lint results
+              if: ${{ github.event_name == 'pull_request' }}
+              uses: github/codeql-action/upload-sarif@v3
+              with:
+                sarif_file: build/lint.sarif
+                wait-for-processing: true
+            - name: Test
+              run: npm run ci-test
+            - name: Upload Unit Test results
+              if: ${{ github.event_name == 'pull_request' }}
+              uses: actions/upload-artifact@v4
+              with:
+                  name: Unit Test Results
+                  path: build/junit.xml
+            - name: Upload Coverage results
+              if: ${{ github.event_name == 'pull_request' }}
+              uses: actions/upload-artifact@v4
+              with:
+                  name: Coverage Results
+                  path: build/coverage-summary.json
+
+    # The release job only executes when pushing to the main branch
+    release:
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+        runs-on: ubuntu-latest
+        permissions:
+            contents: write
+        needs:
+            - version
+            - build
+        steps:
+            - name: Create Release
+              id: create_release
+              uses: actions/create-release@latest
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              with:
+                  tag_name: ${{ needs.version.outputs.version }}
+                  release_name: Release ${{ needs.version.outputs.version }}
+                  body: |
+                      Release ${{ needs.version.outputs.version }}
+                  draft: false
+                  prerelease: false

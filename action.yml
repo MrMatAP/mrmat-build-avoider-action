@@ -1,0 +1,17 @@
+name: MrMat Build Avoider Action
+author: MrMat
+description:
+    A GitHub Action to avoid builds on push when there is a corresponding PR
+
+inputs:
+    github-token:
+        description: Token to use for GitHub API requests.
+        required: true
+
+outputs:
+    abort:
+        description: Set to true if the build should be aborted.
+
+runs:
+    using: node20
+    main: dist/index.js
