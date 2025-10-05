@@ -83,3 +83,4 @@ fabric.properties
 .env
 node_modules
 coverage
+build

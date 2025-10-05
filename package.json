@@ -29,7 +29,7 @@
         "format:check": "npx prettier --check .",
         "ci-lint": "npx eslint . --format @microsoft/eslint-formatter-sarif --output-file build/lint.sarif",
         "lint": "npx eslint .",
-        "package": "npx rollup --config rollup.config.ts --configPlugin @rollup/plugin-typescript",
+        "package": "npx rollup --config rollup.config.js --configPlugin @rollup/plugin-typescript",
         "ci-test": "NODE_OPTIONS=--experimental-vm-modules NODE_NO_WARNINGS=1 npx jest",
         "test": "NODE_OPTIONS=--experimental-vm-modules NODE_NO_WARNINGS=1 npx jest"
     },

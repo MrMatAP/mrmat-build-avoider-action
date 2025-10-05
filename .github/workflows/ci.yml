@@ -20,11 +20,13 @@ jobs:
         steps:
             - name: Checkout out our code
               uses: actions/checkout@v5.0.0
-            - name: Abort the build on push if we have a corresponding pull request
+            - name:
+                  Abort the build on push if we have a corresponding pull
+                  request
               id: debounce
               uses: ./
               with:
-                github-token: ${{ secrets.GITHUB_TOKEN }}
+                  github-token: ${{ secrets.GITHUB_TOKEN }}
             - name: Version the project
               id: version
               uses: MrMatAP/mrmat-versioning-action@1.0.7
@@ -70,8 +72,8 @@ jobs:
               if: ${{ github.event_name == 'pull_request' }}
               uses: github/codeql-action/upload-sarif@v3
               with:
-                sarif_file: build/lint.sarif
-                wait-for-processing: true
+                  sarif_file: build/lint.sarif
+                  wait-for-processing: true
             - name: Test
               run: npm run ci-test
             - name: Upload Unit Test results
@@ -89,7 +91,9 @@ jobs:
 
     # The release job only executes when pushing to the main branch
     release:
-        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+        if:
+            ${{ github.event_name == 'push' && github.ref == 'refs/heads/main'
+            }}
         runs-on: ubuntu-latest
         permissions:
             contents: write
