@@ -37,4 +37,3 @@ Run `npm install` and then `npm run bundle`.
 Create `.env` based on `.env.example`, but do not commit it to your repo. Set
 values in that file to simulate execution within a GitHub Workflow and execute
 `npx @github/local-action . src/main.ts .env`.
-
