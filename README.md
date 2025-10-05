@@ -31,6 +31,9 @@ Run `npm install` and then `npm run bundle`.
 
 ### Running the action locally
 
+> Running this action locally would require a GitHub token to be injected, so
+> this does not currently work.
+
 Create `.env` based on `.env.example`, but do not commit it to your repo. Set
 values in that file to simulate execution within a GitHub Workflow and execute
 `npx @github/local-action . src/main.ts .env`.
