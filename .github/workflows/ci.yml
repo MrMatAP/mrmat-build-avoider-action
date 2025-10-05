@@ -62,12 +62,6 @@ jobs:
               run: npm run bundle
             - name: Lint
               run: npm run ci-lint
-            - name: Upload Lint results
-              if: ${{ github.event_name == 'pull_request' }}
-              uses: actions/upload-artifact@v4
-              with:
-                  name: Lint Results
-                  path: build/lint.sarif
             - name: Upload Sarif lint results
               if: ${{ github.event_name == 'pull_request' }}
               uses: github/codeql-action/upload-sarif@v3
