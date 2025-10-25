@@ -14,12 +14,12 @@ export async function run(): Promise<void> {
             head: ref
         })
 
-        if (github.context.eventName === 'push' && open_prs.data.length == 0) {
+        if (github.context.eventName === 'push' && open_prs.data.length === 0) {
             core.info('No open pull requests found. Continuing with build')
             core.setOutput('abort', false)
             return
         }
-        open_prs.data.forEach((pr) => {
+        open_prs.data.forEach(pr => {
             if (pr.head.ref === ref) {
                 core.info(
                     `Found open pull request ${pr.number} for ref ${ref}. Debouncing duplicate build on push event`
