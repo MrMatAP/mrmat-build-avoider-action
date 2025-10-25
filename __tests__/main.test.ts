@@ -13,10 +13,11 @@ describe('GitHub Actions Interface', () => {
             repo: { owner: 'MrMat', repo: 'test' },
             eventName: 'push',
             ref: 'refs/heads/feature/foo',
-            open_prs: { data: [
+            open_prs: {
+                data: [
                     {
                         number: 23,
-                        head: {ref: 'refs/heads/feature/foo'}
+                        head: { ref: 'refs/heads/feature/foo' }
                     }
                 ]
             },
@@ -41,10 +42,11 @@ describe('GitHub Actions Interface', () => {
             repo: { owner: 'MrMat', repo: 'test' },
             eventName: 'pull_request',
             ref: 'refs/heads/feature/foo',
-            open_prs: { data: [
+            open_prs: {
+                data: [
                     {
                         number: 42,
-                        head: {ref: 'refs/heads/feature/bar'}
+                        head: { ref: 'refs/heads/feature/bar' }
                     }
                 ]
             },
@@ -54,7 +56,8 @@ describe('GitHub Actions Interface', () => {
                 abort: false
             }
         }
-    ])('$expected.desc',
+    ])(
+        '$expected.desc',
         async ({ repo, eventName, ref, open_prs, expected }) => {
             core.getInput.mockImplementation((input: string) => {
                 switch (input) {
