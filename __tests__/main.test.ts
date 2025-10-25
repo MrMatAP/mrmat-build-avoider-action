@@ -13,9 +13,16 @@ describe('GitHub Actions Interface', () => {
             repo: { owner: 'MrMat', repo: 'test' },
             eventName: 'push',
             ref: 'refs/heads/feature/foo',
-            open_prs: { data: [{ ref: 'refs/heads/feature/foo' }] },
+            open_prs: { data: [
+                    {
+                        number: 23,
+                        head: {ref: 'refs/heads/feature/foo'}
+                    }
+                ]
+            },
             expected: {
-                info: 'Found an open pull request. Skipping build on push',
+                desc: 'Can debounce a push event when there is an open pull request for the same ref',
+                info: 'Found open pull request 23 for ref refs/heads/feature/foo. Debouncing duplicate build on push event',
                 abort: true
             }
         },
@@ -25,7 +32,8 @@ describe('GitHub Actions Interface', () => {
             ref: 'refs/heads/feature/foo',
             open_prs: { data: [] },
             expected: {
-                info: 'Continuing with build',
+                desc: 'Continues the build when there are no open pull requests',
+                info: 'No open pull requests found. Continuing with build',
                 abort: false
             }
         },
@@ -33,14 +41,20 @@ describe('GitHub Actions Interface', () => {
             repo: { owner: 'MrMat', repo: 'test' },
             eventName: 'pull_request',
             ref: 'refs/heads/feature/foo',
-            open_prs: { data: [{ ref: 'refs/heads/feature/bar' }] },
+            open_prs: { data: [
+                    {
+                        number: 42,
+                        head: {ref: 'refs/heads/feature/bar'}
+                    }
+                ]
+            },
             expected: {
-                info: 'Continuing with build',
+                desc: 'Continues for a ref that is not the same as an open pull request',
+                info: 'No pull requests to debounce found. Continuing with build',
                 abort: false
             }
         }
-    ])(
-        '%#: $expected.info for $eventName on $ref',
+    ])('$expected.desc',
         async ({ repo, eventName, ref, open_prs, expected }) => {
             core.getInput.mockImplementation((input: string) => {
                 switch (input) {
