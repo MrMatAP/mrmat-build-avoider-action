@@ -4,7 +4,7 @@ import * as github from '@actions/github'
 export async function run(): Promise<void> {
     try {
         const github_token: string = core.getInput('github-token')
-        const ref = github.context.ref
+        const ref = github.context.ref.replace('refs/heads/', '')
         const gh = github.getOctokit(github_token)
         const repo = github.context.repo
         const open_prs = await gh.rest.pulls.list({
@@ -14,23 +14,29 @@ export async function run(): Promise<void> {
             head: ref
         })
 
-        if (github.context.eventName === 'push' && open_prs.data.length === 0) {
-            core.info('No open pull requests found. Continuing with build')
+        core.info(`Building on ${ref}`)
+        if (github.context.eventName !== 'push') {
+            core.info('Not a push event. Continuing with build.')
             core.setOutput('abort', false)
             return
         }
+
+        if (open_prs.data.length === 0) {
+            core.info(
+                'No relevant open pull requests found. Continuing with build.'
+            )
+            core.setOutput('abort', false)
+            return
+        }
+
         open_prs.data.forEach((pr) => {
-            if (pr.head.ref === ref) {
+            if (ref === pr.head.ref) {
                 core.info(
-                    `Found open pull request ${pr.number} for ref ${ref}. Debouncing duplicate build on push event`
+                    `Found open PR ${pr.number}: '${pr.title}' with head ${ref}. Debouncing this push build.`
                 )
-                core.setOutput('abort', true)
-                return
             }
         })
-
-        core.info('No pull requests to debounce found. Continuing with build')
-        core.setOutput('abort', false)
+        core.setOutput('abort', true)
     } catch (error) {
         if (error instanceof Error) core.setFailed(error.message)
     }

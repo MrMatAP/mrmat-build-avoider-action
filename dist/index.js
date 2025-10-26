@@ -31244,7 +31244,7 @@ var githubExports = requireGithub();
 async function run() {
     try {
         const github_token = coreExports.getInput('github-token');
-        const ref = githubExports.context.ref;
+        const ref = githubExports.context.ref.replace('refs/heads/', '');
         const gh = githubExports.getOctokit(github_token);
         const repo = githubExports.context.repo;
         const open_prs = await gh.rest.pulls.list({
@@ -31253,20 +31253,23 @@ async function run() {
             state: 'open',
             head: ref
         });
-        if (githubExports.context.eventName === 'push' && open_prs.data.length === 0) {
-            coreExports.info('No open pull requests found. Continuing with build');
+        coreExports.info(`Building on ${ref}`);
+        if (githubExports.context.eventName !== 'push') {
+            coreExports.info('Not a push event. Continuing with build.');
+            coreExports.setOutput('abort', false);
+            return;
+        }
+        if (open_prs.data.length === 0) {
+            coreExports.info('No relevant open pull requests found. Continuing with build.');
             coreExports.setOutput('abort', false);
             return;
         }
         open_prs.data.forEach((pr) => {
-            if (pr.head.ref === ref) {
-                coreExports.info(`Found open pull request ${pr.number} for ref ${ref}. Debouncing duplicate build on push event`);
-                coreExports.setOutput('abort', true);
-                return;
+            if (ref === pr.head.ref) {
+                coreExports.info(`Found open PR ${pr.number}: '${pr.title}' with head ${ref}. Debouncing this push build.`);
             }
         });
-        coreExports.info('No pull requests to debounce found. Continuing with build');
-        coreExports.setOutput('abort', false);
+        coreExports.setOutput('abort', true);
     }
     catch (error) {
         if (error instanceof Error)
