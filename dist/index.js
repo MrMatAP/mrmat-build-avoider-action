@@ -31244,20 +31244,28 @@ var githubExports = requireGithub();
 async function run() {
     try {
         const github_token = coreExports.getInput('github-token');
+        const ref = githubExports.context.ref;
         const gh = githubExports.getOctokit(github_token);
         const repo = githubExports.context.repo;
         const open_prs = await gh.rest.pulls.list({
             owner: repo.owner,
             repo: repo.repo,
             state: 'open',
-            head: githubExports.context.ref
+            head: ref
         });
-        if (githubExports.context.eventName === 'push' && open_prs.data.length > 0) {
-            coreExports.info('Found an open pull request. Skipping build on push');
-            coreExports.setOutput('abort', true);
+        if (githubExports.context.eventName === 'push' && open_prs.data.length === 0) {
+            coreExports.info('No open pull requests found. Continuing with build');
+            coreExports.setOutput('abort', false);
             return;
         }
-        coreExports.info('Continuing with build');
+        open_prs.data.forEach((pr) => {
+            if (pr.head.ref === ref) {
+                coreExports.info(`Found open pull request ${pr.number} for ref ${ref}. Debouncing duplicate build on push event`);
+                coreExports.setOutput('abort', true);
+                return;
+            }
+        });
+        coreExports.info('No pull requests to debounce found. Continuing with build');
         coreExports.setOutput('abort', false);
     }
     catch (error) {
