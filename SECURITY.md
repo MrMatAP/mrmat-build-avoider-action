@@ -2,7 +2,8 @@
 
 ## Supported Versions
 
-I'd be surprised if you'd want support for this. But be my guest raising an issue...
+I'd be surprised if you'd want support for this. But be my guest raising an
+issue...
 
 | Version | Supported          |
 | ------- | ------------------ |

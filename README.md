@@ -1,5 +1,7 @@
 # MrMat Build Avoider Action
 
+[![Build](https://github.com/MrMatAP/mrmat-build-avoider-action/actions/workflows/ci.yml/badge.svg)](https://github.com/MrMatAP/mrmat-build-avoider-action/actions/workflows/ci.yml)
+
 This action stops a build triggered by a push when there is a corresponding open
 PR for it.
 

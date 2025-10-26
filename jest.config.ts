@@ -44,8 +44,8 @@ const config: Config = {
     //     statements: 100
     //   }
     // },
-    extensionsToTreatAsEsm: [ '.ts' ],
-    moduleFileExtensions: [ 'js', 'ts' ],
+    extensionsToTreatAsEsm: ['.ts'],
+    moduleFileExtensions: ['js', 'ts'],
     preset: 'ts-jest',
     reporters: [
         'default',
@@ -53,8 +53,8 @@ const config: Config = {
     ],
     resolver: 'ts-jest-resolver',
     testEnvironment: 'node',
-    testMatch: [ '**/*.test.ts' ],
-    testPathIgnorePatterns: [ '/dist/', '/node_modules/' ],
+    testMatch: ['**/*.test.ts'],
+    testPathIgnorePatterns: ['/dist/', '/node_modules/'],
     transform: {
         '^.+\\.ts$': [
             'ts-jest',
