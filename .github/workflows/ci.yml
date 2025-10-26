@@ -56,11 +56,11 @@ jobs:
             - name: Apply version
               run: |
                   npm version ${{ needs.prep.outputs.version }} --no-git-tag-version
-                  echo "DEBUG: github.event_name: ${{ github.event_name }}"
-                  echo "DEBUG: github.ref: ${{ github.ref }}"
-                  echo "DEBUG: github.target_ref: ${{ github.target_ref }}"
+                  echo "::notice title=DEBUG::github.event_name: ${{ github.event_name }}"
+                  echo "::notice title=DEBUG::github.ref: ${{ github.ref }}"
+                  echo "::notice title=DEBUG::github.base_ref: ${{ github.base_ref }}"
             - name: Verify dist/ results match with src/
-              if: ${{ github.event_name == 'pull_request' && github.target_ref == 'refs/heads/main' }}
+              if: ${{ github.event_name == 'pull_request' && github.base_ref == 'refs/heads/main' }}
               run: |
                 npm run bundle
                 if [ ! -d dist/ ]; then
