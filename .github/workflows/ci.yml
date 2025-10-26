@@ -58,30 +58,12 @@ jobs:
               run:
                   npm version ${{ needs.version.outputs.version }}
                   --no-git-tag-version
-            - name: Build
-              run: npm run bundle
             - name: Lint
               run: npm run ci-lint
-            - name: Upload Sarif lint results
-              if: ${{ github.event_name == 'pull_request' }}
-              uses: github/codeql-action/upload-sarif@v3
-              with:
-                  sarif_file: build/lint.sarif
-                  wait-for-processing: true
             - name: Test
               run: npm run ci-test
-            - name: Upload Unit Test results
-              if: ${{ github.event_name == 'pull_request' }}
-              uses: actions/upload-artifact@v4
-              with:
-                  name: Unit Test Results
-                  path: build/junit.xml
-            - name: Upload Coverage results
-              if: ${{ github.event_name == 'pull_request' }}
-              uses: actions/upload-artifact@v4
-              with:
-                  name: Coverage Results
-                  path: build/coverage-summary.json
+            - name: Build
+              run: npm run bundle
 
     # The release job only executes when pushing to the main branch
     release:
