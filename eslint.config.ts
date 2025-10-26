@@ -46,7 +46,7 @@ export default defineConfig([
             '@stylistic/quotes': ['warn', 'single', { avoidEscape: true }],
             '@stylistic/array-bracket-newline': ['error', 'consistent'],
             '@stylistic/array-element-newline': ['error', 'consistent'],
-            '@stylistic/arrow-parens': ['error', 'as-needed'],
+            '@stylistic/arrow-parens': ['warn', 'as-needed'],
             '@stylistic/arrow-spacing': [
                 'error',
                 { before: true, after: true }
