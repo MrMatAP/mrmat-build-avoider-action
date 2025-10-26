@@ -54,9 +54,11 @@ jobs:
             - name: Install Dependencies
               run: npm ci
             - name: Apply version
-              run:
-                  npm version ${{ needs.prep.outputs.version }}
-                  --no-git-tag-version
+              run: |
+                  npm version ${{ needs.prep.outputs.version }} --no-git-tag-version
+                  echo "DEBUG: github.event_name: ${{ github.event_name }}"
+                  echo "DEBUG: github.ref: ${{ github.ref }}"
+                  echo "DEBUG: github.target_ref: ${{ github.target_ref }}"
             - name: Verify dist/ results match with src/
               if: ${{ github.event_name == 'pull_request' && github.target_ref == 'refs/heads/main' }}
               run: |
