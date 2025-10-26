@@ -74,8 +74,6 @@ jobs:
               run: npm run ci-lint
             - name: Test
               run: npm run ci-test
-            - name: Build
-              run: npm run bundle
 
     # The release job only executes when pushing to the main branch
     release:
