@@ -31253,6 +31253,7 @@ async function run() {
             state: 'open',
             head: ref
         });
+        coreExports.info(`Building on ${ref}`);
         if (githubExports.context.eventName === 'push' && open_prs.data.length === 0) {
             coreExports.info('No open pull requests found. Continuing with build');
             coreExports.setOutput('abort', false);
@@ -31260,12 +31261,13 @@ async function run() {
         }
         open_prs.data.forEach((pr) => {
             if (pr.head.ref === ref) {
-                coreExports.info(`Found open pull request ${pr.number} for ref ${ref}. Debouncing duplicate build on push event`);
+                coreExports.info(`Found open pull request ${pr.number} building for ref ${ref}. Debouncing duplicate build on push event`);
                 coreExports.setOutput('abort', true);
                 return;
             }
         });
         coreExports.info('No pull requests to debounce found. Continuing with build');
+        coreExports.info('Test');
         coreExports.setOutput('abort', false);
     }
     catch (error) {

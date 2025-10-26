@@ -14,6 +14,7 @@ export async function run(): Promise<void> {
             head: ref
         })
 
+        core.info(`Building on ${ref}`)
         if (github.context.eventName === 'push' && open_prs.data.length === 0) {
             core.info('No open pull requests found. Continuing with build')
             core.setOutput('abort', false)
@@ -22,7 +23,7 @@ export async function run(): Promise<void> {
         open_prs.data.forEach((pr) => {
             if (pr.head.ref === ref) {
                 core.info(
-                    `Found open pull request ${pr.number} for ref ${ref}. Debouncing duplicate build on push event`
+                    `Found open pull request ${pr.number} building for ref ${ref}. Debouncing duplicate build on push event`
                 )
                 core.setOutput('abort', true)
                 return
@@ -30,7 +31,7 @@ export async function run(): Promise<void> {
         })
 
         core.info('No pull requests to debounce found. Continuing with build')
-        core.info("Test")
+        core.info('Test')
         core.setOutput('abort', false)
     } catch (error) {
         if (error instanceof Error) core.setFailed(error.message)

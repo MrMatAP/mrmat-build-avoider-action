@@ -60,18 +60,19 @@ jobs:
                   echo "::notice title=DEBUG::github.ref: ${{ github.ref }}"
                   echo "::notice title=DEBUG::github.base_ref: ${{ github.base_ref }}"
             - name: Verify dist/ results match with src/
-              if: ${{ github.event_name == 'pull_request' && github.base_ref == 'main' }}
+              if:
+                  ${{ github.event_name == 'pull_request' && github.base_ref ==
+                  'main' }}
               run: |
-                npm run bundle
-                if [ ! -d dist/ ]; then
-                  echo "::error title=Action Release::dist/ directory not found"
-                  exit 1
-                fi
-                if [ "$(git diff --ignore-space-at-eol --text dist/ | wc -l)" -gt "0" ]; then
-                  echo "::error title=Action Release::Detected uncommitted changes in the dist/ directory. GH Actions need to be built and committed outside CI:"
-                  git diff --ignore-space-at-eol --text dist/
-                  exit 1
-                fi
+                  npm run bundle
+                  if [ ! -d dist/ ]; then
+                    echo "::error title=Action Release::dist/ directory not found"
+                    exit 1
+                  fi
+                  if [ "$(git diff --ignore-space-at-eol --text dist/ | wc -l)" -gt "0" ]; then
+                    echo "::error title=Action Release::Detected uncommitted changes in the dist/ directory. GH Actions need to be built and committed outside CI"
+                    exit 1
+                  fi
             - name: Lint
               run: npm run ci-lint
             - name: Test
@@ -80,7 +81,8 @@ jobs:
     # The release job only executes when pushing to the main branch
     release:
         if:
-            ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+            ${{ github.event_name == 'push' && github.ref == 'refs/heads/main'
+            }}
         runs-on: ubuntu-latest
         permissions:
             contents: write

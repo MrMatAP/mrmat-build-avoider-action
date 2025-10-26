@@ -23,7 +23,7 @@ describe('GitHub Actions Interface', () => {
             },
             expected: {
                 desc: 'Can debounce a push event when there is an open pull request for the same ref',
-                info: 'Found open pull request 23 for ref refs/heads/feature/foo. Debouncing duplicate build on push event',
+                info: 'Found open pull request 23 building for ref refs/heads/feature/foo. Debouncing duplicate build on push event',
                 abort: true
             }
         },
@@ -83,7 +83,7 @@ describe('GitHub Actions Interface', () => {
 
             await run()
 
-            expect(core.info).toHaveBeenNthCalledWith(1, expected.info)
+            expect(core.info).toHaveBeenNthCalledWith(2, expected.info)
             expect(core.setOutput).toHaveBeenNthCalledWith(
                 1,
                 'abort',
