@@ -31,6 +31,7 @@ export async function run(): Promise<void> {
 
         core.info('No pull requests to debounce found. Continuing with build')
         core.setOutput('abort', false)
+
     } catch (error) {
         if (error instanceof Error) core.setFailed(error.message)
     }
