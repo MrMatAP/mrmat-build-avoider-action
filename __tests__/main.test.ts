@@ -17,13 +17,14 @@ describe('GitHub Actions Interface', () => {
                 data: [
                     {
                         number: 23,
+                        title: 'Awesome PR 23',
                         head: { ref: 'refs/heads/feature/foo' }
                     }
                 ]
             },
             expected: {
                 desc: 'Can debounce a push event when there is an open pull request for the same ref',
-                info: 'Found open pull request 23 building for ref refs/heads/feature/foo. Debouncing duplicate build on push event',
+                info: 'Found open PR 23 with head refs/heads/feature/foo. Debouncing this push build.',
                 abort: true
             }
         },
@@ -46,6 +47,7 @@ describe('GitHub Actions Interface', () => {
                 data: [
                     {
                         number: 42,
+                        title: 'Awesome PR 42',
                         head: { ref: 'refs/heads/feature/bar' }
                     }
                 ]
@@ -83,7 +85,7 @@ describe('GitHub Actions Interface', () => {
 
             await run()
 
-            expect(core.info).toHaveBeenNthCalledWith(2, expected.info)
+            expect(core.info).toHaveBeenCalledWith(expected.info)
             expect(core.setOutput).toHaveBeenNthCalledWith(
                 1,
                 'abort',
