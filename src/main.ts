@@ -21,12 +21,9 @@ export async function run(): Promise<void> {
             return
         }
         open_prs.data.forEach((pr) => {
-            core.info(
-                `Found open pull request ${pr.number}:${pr.title} with head ref ${pr.head.ref}`
-            )
-            if (pr.head.ref === ref) {
+            if (ref === `refs/heads/${pr.head.ref}`) {
                 core.info(
-                    `Found open PR ${pr.number} with head ${ref}. Debouncing this push build.`
+                    `Found open PR ${pr.number}: '${pr.title}' with head ${ref}. Debouncing this push build.`
                 )
                 core.setOutput('abort', true)
                 return

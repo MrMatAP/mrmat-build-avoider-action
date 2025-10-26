@@ -31260,9 +31260,8 @@ async function run() {
             return;
         }
         open_prs.data.forEach((pr) => {
-            coreExports.info(`Found open pull request ${pr.number}:${pr.title} with head ref ${pr.head.ref}`);
-            if (pr.head.ref === ref) {
-                coreExports.info(`Found open PR ${pr.number} with head ${ref}. Debouncing this push build.`);
+            if (ref === `refs/heads/${pr.head.ref}`) {
+                coreExports.info(`Found open PR ${pr.number}: '${pr.title}' with head ${ref}. Debouncing this push build.`);
                 coreExports.setOutput('abort', true);
                 return;
             }

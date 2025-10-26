@@ -18,13 +18,13 @@ describe('GitHub Actions Interface', () => {
                     {
                         number: 23,
                         title: 'Awesome PR 23',
-                        head: { ref: 'refs/heads/feature/foo' }
+                        head: { ref: 'feature/foo' }
                     }
                 ]
             },
             expected: {
                 desc: 'Can debounce a push event when there is an open pull request for the same ref',
-                info: 'Found open PR 23 with head refs/heads/feature/foo. Debouncing this push build.',
+                info: "Found open PR 23: 'Awesome PR 23' with head refs/heads/feature/foo. Debouncing this push build.",
                 abort: true
             }
         },
@@ -48,7 +48,7 @@ describe('GitHub Actions Interface', () => {
                     {
                         number: 42,
                         title: 'Awesome PR 42',
-                        head: { ref: 'refs/heads/feature/bar' }
+                        head: { ref: 'feature/bar' }
                     }
                 ]
             },
