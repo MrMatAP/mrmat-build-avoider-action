@@ -19,12 +19,17 @@ describe('GitHub Actions Interface', () => {
                         number: 23,
                         title: 'Awesome PR 23',
                         head: { ref: 'feature/foo' }
+                    },
+                    {
+                        number: 24,
+                        title: 'Awesome PR 24',
+                        head: { ref: 'feature/awesome-24' }
                     }
                 ]
             },
             expected: {
                 desc: 'Can debounce a push event when there is an open pull request for the same ref',
-                info: "Found open PR 23: 'Awesome PR 23' with head refs/heads/feature/foo. Debouncing this push build.",
+                info: "Found open PR 23: 'Awesome PR 23' with head feature/foo. Debouncing this push build.",
                 abort: true
             }
         },
@@ -35,7 +40,7 @@ describe('GitHub Actions Interface', () => {
             open_prs: { data: [] },
             expected: {
                 desc: 'Continues the build when there are no open pull requests',
-                info: 'No open pull requests found. Continuing with build',
+                info: 'No relevant open pull requests found. Continuing with build.',
                 abort: false
             }
         },
@@ -46,15 +51,15 @@ describe('GitHub Actions Interface', () => {
             open_prs: {
                 data: [
                     {
-                        number: 42,
-                        title: 'Awesome PR 42',
-                        head: { ref: 'feature/bar' }
+                        number: 23,
+                        title: 'Awesome PR 23',
+                        head: { ref: 'feature/foo' }
                     }
                 ]
             },
             expected: {
-                desc: 'Continues for a ref that is not the same as an open pull request',
-                info: 'No pull requests to debounce found. Continuing with build',
+                desc: 'Builds for events other than push, even when there is a matching PR',
+                info: 'Not a push event. Continuing with build.',
                 abort: false
             }
         }
